@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SignIn"
+    android:orientation="vertical">
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.121"
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/worklifebalance" />
+    <TextView
+        android:id="@+id/tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:gravity="center"
+        android:layout_marginTop="5dp"/>
+    <EditText
+
+        android:id="@+id/editTextUserNameToLogin"
+        android:layout_marginTop="60dp"
+        android:inputType="text"
+        android:layout_width="fill_parent"
+
+        android:layout_height="wrap_content"
+        android:background="#D8FED6"
+        android:hint="Email ID"
+
+        android:ems="10" >
+
+        <requestFocus />
+
+    </EditText>
+
+
+
+    <EditText
+
+        android:id="@+id/editTextPasswordToLogin"
+        android:layout_marginTop="5dp"
+        android:background="#D8FED6"
+        android:layout_width="fill_parent"
+
+        android:layout_height="wrap_content"
+
+        android:ems="10"
+
+        android:inputType="textPassword"
+
+        android:hint="Password" />
+
+
+
+    <Button
+
+        android:id="@+id/buttonSignIn"
+        android:background="#053105"
+        android:layout_width="fill_parent"
+        android:textColor="#E2FCE1"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textSize="24dp"
+
+        android:text="Sign In" />
+
+</LinearLayout>
