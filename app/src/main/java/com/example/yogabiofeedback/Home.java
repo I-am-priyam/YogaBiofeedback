@@ -14,8 +14,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -30,25 +34,31 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Home extends AppCompatActivity{
-    Button abt,displayBtn;
-    String currentImagePath=null;
+
     private static final int IMAGE_REQUEST=1;
+
+    String currentImagePath=null;
+
+    Button displayBtn;
+    ImageView help,capture,cal;
+    TextView tv;
     private static final int PERMISSION_REQUEST_CODE = 200;
-    ImageView capture;
+    Animation topAnim;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        abt=findViewById(R.id.aboutid2);
-        //abt.setOnClickListener(this);
-
-        //Camera permission
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        tv=findViewById(R.id.textView);
+        tv.setAnimation(topAnim);
         if (!checkPermission()) {
+
             requestPermission();
+
         }
 
-        //Display result button
+
         displayBtn=findViewById(R.id.disbtn);
         displayBtn.setVisibility(View.INVISIBLE);
         displayBtn.setActivated(false);
@@ -59,6 +69,7 @@ public class Home extends AppCompatActivity{
                     Toast.makeText(Home.this, currentImagePath, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(Home.this, Result.class);
                     intent.putExtra("image_paths", currentImagePath);
+                    System.out.println(currentImagePath);
                     startActivity(intent);
                 }
                 else{
@@ -66,39 +77,30 @@ public class Home extends AppCompatActivity{
                 }
             }
         });
-
-
-
-
         capture=findViewById(R.id.capture);
         capture.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            int id = view.getId();
-
-
-
-
-            Intent cameraIntent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-            if(cameraIntent.resolveActivity(getPackageManager())!=null)
-            {
-                File imageFile=null;
-                try {
-                    imageFile=getImageFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                if(imageFile!=null)
+            @Override
+            public void onClick(View view) {
+                int id = view.getId();
+                Intent cameraIntent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if(cameraIntent.resolveActivity(getPackageManager())!=null)
                 {
-                    Uri imageUri= FileProvider.getUriForFile(Home.this,"com.example.yogabiofeedback.fileprovider",imageFile);
-                    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri);
-                    startActivityForResult(cameraIntent,IMAGE_REQUEST);
+                    File imageFile=null;
+                    try {
+                        imageFile=getImageFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    if(imageFile!=null)
+                    {
+                        Uri imageUri=FileProvider.getUriForFile(Home.this,"com.example.yogabiofeedback.fileprovider",imageFile);
+                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri);
+                        startActivityForResult(cameraIntent,IMAGE_REQUEST);
+                    }
                 }
             }
-        }
-    });
+        });
 
 
     }
@@ -117,19 +119,14 @@ public class Home extends AppCompatActivity{
 
     }
 
-
+    @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0) {
-
                     boolean locationAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     boolean cameraAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-
-
-                    // Snackbar.make(view, "Permission Denied, You cannot access location data and camera.", Snackbar.LENGTH_LONG).show();
-
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE)) {
                             showMessageOKCancel("You need to allow access to both the permissions",
@@ -145,16 +142,10 @@ public class Home extends AppCompatActivity{
                             return;
                         }
                     }
-
-
                 }
-
-
                 break;
         }
     }
-
-
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
         new AlertDialog.Builder(Home.this)
                 .setMessage(message)
@@ -163,8 +154,6 @@ public class Home extends AppCompatActivity{
                 .create()
                 .show();
     }
-
-
     private File getImageFile() throws IOException
     {
         String timeStamp=new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -174,9 +163,7 @@ public class Home extends AppCompatActivity{
         File imageFile=File.createTempFile(imageName,".jpg",storageDir);
         currentImagePath=imageFile.getAbsolutePath();
         return imageFile;
-
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -188,15 +175,10 @@ public class Home extends AppCompatActivity{
             displayBtn.setVisibility(View.VISIBLE);
         }
     }
-
     @Override
     protected void onPause() {
         super.onPause();
         displayBtn.setActivated(false);
         displayBtn.setVisibility(View.INVISIBLE);
     }
-
-
-
-
 }
